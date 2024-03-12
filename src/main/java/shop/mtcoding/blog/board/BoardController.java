@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -12,6 +13,25 @@ import java.util.List;
 @Controller
 public class BoardController {
     private final BoardNativeRepository boardNativeRepository;
+
+    @PostMapping("/board/{id}/update")
+    public String update(@PathVariable int id, String title, String content, String username){
+        boardNativeRepository.updateById(id, title, content, username);
+        return "redirect:/board/"+id;
+    }
+
+    @GetMapping("/board/{id}/update-form")
+    public String updateForm(@PathVariable (name = "id") int id, HttpServletRequest request){
+        Board board=boardNativeRepository.findById(id);
+        request.setAttribute("board", board);
+        return "board/update-form";
+    }
+    @PostMapping("/board/{id}/delete")
+    public String delete(@PathVariable (name = "id") int id){
+        boardNativeRepository.deleteById(id);
+
+        return "redirect:/";
+    }
 
     @PostMapping("/board/save")
     public String save(String username, String title, String content){
@@ -32,8 +52,10 @@ public class BoardController {
         return "board/save-form";
     }
 
-    @GetMapping("/board/1")
-    public String detail() {
+    @GetMapping("/board/{id}")
+    public String detail(@PathVariable (name = "id") int id, HttpServletRequest request) {
+        Board board = boardNativeRepository.findById(id);
+        request.setAttribute("board", board);
         return "board/detail";
     }
 }
