@@ -10,12 +10,12 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
-public class BoardNativeRepository {
+public class BoardPersistRepository {
     private final EntityManager em;
 
     @Transactional
-    public  void updateById(int id,String title, String content, String username){
-        Query query= em.createNativeQuery("update board_tb set title=?, content=?, username=? where id=?");
+    public void updateById(int id, String title, String content, String username) {
+        Query query = em.createNativeQuery("update board_tb set title=?, content=?, username=? where id=?");
         query.setParameter(1, title);
         query.setParameter(2, content);
         query.setParameter(3, username);
@@ -24,31 +24,31 @@ public class BoardNativeRepository {
         query.executeUpdate();
     }
 
-    public Board findById(int id){
+    public Board findById(int id) {
         Query query = em.createNativeQuery("select * from board_tb where id=?", Board.class);
         query.setParameter(1, id);
 
-        return (Board)query.getSingleResult();
+        return (Board) query.getSingleResult();
     }
 
-    public List<Board> findAll(){
+    public List<Board> findAll() {
         Query query = em.createNativeQuery("select * from board_tb order by id desc", Board.class);
         return query.getResultList();
     }
 
     @Transactional
-    public  void save(String title, String content, String username){
-        Query query= em.createNativeQuery("insert into board_tb (title, content, username, created_at) values (?,?,?,now())");
-        query.setParameter(1, title);
-        query.setParameter(2, content);
-        query.setParameter(3, username);
+    public Board save(Board board) {
 
-        query.executeUpdate();
+        //1. 비영속 객체
+        em.persist(board);
+        //2. board -> 영속 객체
+        return board; //return 필요없음
+
     }
 
     @Transactional
-    public  void deleteById(int id){
-        Query query= em.createNativeQuery("delete from board_tb where id=?");
+    public void deleteById(int id) {
+        Query query = em.createNativeQuery("delete from board_tb where id=?");
         query.setParameter(1, id);
 
         query.executeUpdate();
