@@ -38,18 +38,18 @@ public class BoardPersistRepositoryTest {
         int id=1;
         // when
         //아이디 있는지 확인
-        Board board1 = boardPersistRepository.findById(1);
+        Board board1 = boardPersistRepository.findById(id);
         System.out.println("findById_test : "+board1);
         //삭제
-        boardPersistRepository.deleteById2(1);
+        boardPersistRepository.deleteById2(id);
         //슬립을걸어 데이터 베이스에서 변경됐는지 확인할 수 있음
         try {
             // 3초 동안 스레드를 일시적으로 정지시킵니다.
-            Thread.sleep(3000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        board1 = boardPersistRepository.findById(1);
+        board1 = boardPersistRepository.findById(id);
         System.out.println("findById_test : "+board1);
         List<Board> boardList = boardPersistRepository.findAll();
         System.out.println(boardList);

@@ -14,7 +14,7 @@ public class BoardPersistRepository {
     private final EntityManager em;
     @Transactional
     public void updateById(int id, BoardRequest.updateDTO reqDTO) {
-        Board board = findById(id); //영속화된 객체의 상태를 변경하고 트랜잭션이 종료되면 업데이트된다.ㄹ
+        Board board = findById(id); //영속화된 객체의 상태를 변경하고 트랜잭션이 종료되면 업데이트된다.
         board.update(reqDTO);
     } //더티체킹
     public void deleteById2(int id) {
