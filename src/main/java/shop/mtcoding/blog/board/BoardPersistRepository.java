@@ -12,6 +12,24 @@ import java.util.List;
 @Repository
 public class BoardPersistRepository {
     private final EntityManager em;
+    @Transactional
+    public void updateById(int id, BoardRequest.updateDTO reqDTO) {
+        Board board = findById(id); //영속화된 객체의 상태를 변경하고 트랜잭션이 종료되면 업데이트된다.ㄹ
+        board.update(reqDTO);
+    } //더티체킹
+    public void deleteById2(int id) {
+        Board board =findById(id);
+        em.remove(board); //PC에 객체를 지우고, 트랜잭션이 종료되면 객체를 지운다
+    }
+    public void deleteById(int id) {
+//        em.createQuery("delete from Board b where b.id = :id")
+//                .setParameter("id",id)
+//                .executeUpdate();
+    }
+    public Board findById(int id) {
+        Board board = em.find(Board.class,id); //(받을 클래스, 프라이머리키),
+        return board;
+    }
 
     public List<Board> findAll() {
         Query query = em.createQuery("select b from Board b order by b.id desc"); //조회할때는 다 쿼리를 적어야함
@@ -26,33 +44,6 @@ public class BoardPersistRepository {
         return board; //return 필요없음
 
     }
-    @Transactional
-    public void updateById(int id, String title, String content, String username) {
-        Query query = em.createNativeQuery("update board_tb set title=?, content=?, username=? where id=?");
-        query.setParameter(1, title);
-        query.setParameter(2, content);
-        query.setParameter(3, username);
-        query.setParameter(4, id);
-
-        query.executeUpdate();
-    }
-
-    public Board findById(int id) {
-        Query query = em.createNativeQuery("select * from board_tb where id=?", Board.class);
-        query.setParameter(1, id);
-
-        return (Board) query.getSingleResult();
-    }
 
 
-
-
-
-    @Transactional
-    public void deleteById(int id) {
-        Query query = em.createNativeQuery("delete from board_tb where id=?");
-        query.setParameter(1, id);
-
-        query.executeUpdate();
-    }
 }

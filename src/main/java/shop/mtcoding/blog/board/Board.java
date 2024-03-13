@@ -30,4 +30,10 @@ public class Board { //모델링 : 데이터베이스세상과 자바의세상�
         this.content = content;
         this.username = username;
     }
+
+    public void update(BoardRequest.updateDTO reqDTO){ //재사용하기 위해서 DTO이름을 정해서 쓸 수 없음
+        this.title = title;
+        this.content = content;
+        this.username = username;
+    }
 }
