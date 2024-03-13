@@ -1,6 +1,5 @@
 package shop.mtcoding.blog.board;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -12,11 +11,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Import(BoardPersistRepository.class)
 @DataJpaTest
-public class BoardNativeRepositoryTest {
+public class BoardPersistRepositoryTest {
 
     @Autowired // DI
     private BoardPersistRepository boardPersistRepository;
+    @Test
+    public void findAll_test(){
+        // given
 
+        // when
+        List<Board> boardList = boardPersistRepository.findAll();
+
+        // then
+        System.out.println("findAll_test/size : "+boardList.size());
+        System.out.println("findAll_test/username : "+boardList.get(2).getUsername());
+
+        //org.assertj.core.api
+        assertThat(boardList.size()).isEqualTo(4);
+        assertThat(boardList.get(3).getUsername()).isEqualTo("ssar");
+    }
     @Test
     public void seve_test(){
         // given
@@ -71,19 +84,5 @@ public class BoardNativeRepositoryTest {
         assertThat(board.getTitle()).isEqualTo("제목1");
         assertThat(board.getUsername()).isEqualTo("ssar");
     }
-    @Test
-    public void findAll_test(){
-        // given
 
-        // when
-        List<Board> boardList = boardPersistRepository.findAll();
-
-        // then
-        System.out.println("findAll_test/size : "+boardList.size());
-        System.out.println("findAll_test/username : "+boardList.get(2).getUsername());
-
-        //org.assertj.core.api
-        assertThat(boardList.size()).isEqualTo(4);
-        assertThat(boardList.get(3).getUsername()).isEqualTo("ssar");
-    }
 }

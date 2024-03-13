@@ -13,6 +13,19 @@ import java.util.List;
 public class BoardPersistRepository {
     private final EntityManager em;
 
+    public List<Board> findAll() {
+        Query query = em.createQuery("select b from Board b order by b.id desc"); //조회할때는 다 쿼리를 적어야함
+        return query.getResultList();
+    }
+    @Transactional
+    public Board save(Board board) {
+
+        //1. 비영속 객체
+        em.persist(board);
+        //2. board -> 영속 객체
+        return board; //return 필요없음
+
+    }
     @Transactional
     public void updateById(int id, String title, String content, String username) {
         Query query = em.createNativeQuery("update board_tb set title=?, content=?, username=? where id=?");
@@ -31,20 +44,9 @@ public class BoardPersistRepository {
         return (Board) query.getSingleResult();
     }
 
-    public List<Board> findAll() {
-        Query query = em.createNativeQuery("select * from board_tb order by id desc", Board.class);
-        return query.getResultList();
-    }
 
-    @Transactional
-    public Board save(Board board) {
 
-        //1. 비영속 객체
-        em.persist(board);
-        //2. board -> 영속 객체
-        return board; //return 필요없음
 
-    }
 
     @Transactional
     public void deleteById(int id) {
