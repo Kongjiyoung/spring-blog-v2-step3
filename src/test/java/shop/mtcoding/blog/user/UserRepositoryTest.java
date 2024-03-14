@@ -25,4 +25,5 @@ public class UserRepositoryTest {
         // then
         Assertions.assertThat(user.getUsername()).isEqualTo("ssa");
     }
+
 }
