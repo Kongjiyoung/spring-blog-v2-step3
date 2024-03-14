@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-@Controller
+@RequiredArgsConstructor //final에 붙은 생성자를 만들어줘
+@Controller //new BooardController(IoC에서 BoardRepository를 찾아서 주입) -> IoC 컨테이너 등록
 public class BoardController {
     private final BoardRepository boardRepository;
 

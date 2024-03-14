@@ -27,7 +27,7 @@ public class BoardRepositoryTest {
     }
 
 //    @Test
-//    public void findAllV2_test(){
+//    public void findUser_test(){
 //        //given
 //
 //        //when
@@ -38,33 +38,22 @@ public class BoardRepositoryTest {
 //
 //    }
     @Test
-    public void findAll1_test(){
+    public void findUserid_test(){
         //given
 
         //when
         List<Board> boardList=boardRepository.findAll();
         int[] id=boardList.stream().mapToInt(board->board.getUser().getId()).distinct().toArray();
         //then
+        for (int i : id){
+            System.out.println(i);
+        }
 
-        System.out.println(id);
-
-
+        // select * from user_tb where id in (3,2,1,1);
+        // select * from user_tb where id in (3,2,1);
     }
     @Test
-    public void findAll2_test(){
-        //given
-
-        //when
-        List<Board> boardList=boardRepository.findAll();
-        int[] id=boardList.stream().mapToInt(board->board.getUser().getId()).distinct().toArray();
-        //then
-
-        System.out.println(id);
-
-
-    }
-    @Test
-    public void randomquery_test(){
+    public void query_test(){
         int[] idx= {1,2,3};
 
         String q="select u from User u where u.id in (";
@@ -79,18 +68,7 @@ public class BoardRepositoryTest {
 
         System.out.println(q);
     }
-    @Test
-    public void custom_test(){
-        List<Board> boardList=boardRepository.findAll();
 
-        int[] userIds = boardList.stream().mapToInt(board->board.getUser().getId()).distinct().toArray(); //mapToInt int형식으로 모으기, distinct [3,2,1,1]->[3,2,1]로 찌그러트리기
-        for (int i : userIds){
-            System.out.println(i);
-        }
-
-        // select * from user_tb where id in (3,2,1,1);
-        // select * from user_tb where id in (3,2,1);
-    }
     @Test
     public void findAll_lazyLoading_test(){
         // given

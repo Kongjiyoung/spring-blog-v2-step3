@@ -17,6 +17,7 @@ public class BoardRepository {
         String q1 = "select b from Board b order by b.id desc";
         List<Board> boardList = em.createQuery(q1, Board.class).getResultList();
         int[] idx = boardList.stream().mapToInt(board -> board.getUser().getId()).distinct().toArray();
+//        List<Inteager> idx = boardList.stream().mapToInt(board -> board.getUser().getId()).distinct().boxed().toArray();
 
         String q = "select u from User u where u.id in (";
         for (int i = 0; i < idx.length; i++) {
