@@ -26,7 +26,7 @@ public class Board { //모델링 : 데이터베이스세상과 자바의세상�
 
     //@joinColumn(name="userId") //따로 pk가져온 폴링키 이름을 지정할 수 있음
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user; //user_id 자동으로 pk가져와 user_id로 연결함
+    private User user; //user_id 자동으로 pk가져와 user_id로 연결함 //폴링키가 자동으로 제약조건으로 걸림
 
     @CreationTimestamp //pc -> db (날짜 주입)
     private Timestamp createdAt;

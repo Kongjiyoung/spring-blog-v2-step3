@@ -21,7 +21,7 @@ public class UserController {
         }
 
         session.setAttribute("sessionUser", sessionUser);
-        return "user/login-form";
+        return "redirect:/";
     }
     @GetMapping("/join-form")
     public String joinForm() {

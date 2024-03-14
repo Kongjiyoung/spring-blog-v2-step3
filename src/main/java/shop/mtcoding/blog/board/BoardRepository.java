@@ -2,6 +2,7 @@ package shop.mtcoding.blog.board;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import shop.mtcoding.blog.user.User;
@@ -13,6 +14,11 @@ import java.util.List;
 public class BoardRepository {
     private final EntityManager em;
 
+    @Transactional
+    public Board save(Board board){
+        em.persist(board);
+        return board;
+    }
     public List<Board> findAllV2() {
         String q1 = "select b from Board b order by b.id desc";
         List<Board> boardList = em.createQuery(q1, Board.class).getResultList();
@@ -29,8 +35,8 @@ public class BoardRepository {
         }
         Query query = em.createQuery(q, User.class);
         for (int i = 0; i < idx.length; i++) {
-            String id = "id";
-            query.setParameter(id + i, idx[i]);
+
+            query.setParameter("id" + i, idx[i]);
         }
         List<User> userList = query.getResultList();
 
@@ -42,15 +48,15 @@ public class BoardRepository {
 //            }
 //        }
 
-        List<Board> newBoardList=boardList.stream().filter(board -> {
-            for (User user : userList) {
-                if (board.getUser().getId() == user.getId()) {
-                    board.setUser(user);
-                    return true;
-                }
-            }
-            return false;
-        }).toList();
+        boardList.stream().forEach(b->{
+            User user=userList.stream().filter(u->
+                    u.getId()==b.getId()).findFirst().get();
+            b.setUser(user);
+        });
+        boardList.stream().forEach(b -> {
+            User user = userList.stream().filter(u -> u.getId() == b.getUser().getId()).findFirst().get();
+            b.setUser(user);
+        });
 
 //        List<Board> newBoardList2=boardList.stream().filter(board -> {
 //            for (User user : userList) {
@@ -61,7 +67,7 @@ public class BoardRepository {
 //            return false;
 //        }).toList();
 
-        return newBoardList;
+        return boardList;
     }
 
     public List<Board> findAll() {

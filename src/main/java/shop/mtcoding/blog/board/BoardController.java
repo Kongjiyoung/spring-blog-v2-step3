@@ -1,12 +1,14 @@
 package shop.mtcoding.blog.board;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
@@ -14,8 +16,21 @@ import java.util.List;
 @Controller //new BooardController(IoC에서 BoardRepository를 찾아서 주입) -> IoC 컨테이너 등록
 public class BoardController {
     private final BoardRepository boardRepository;
+    private final HttpSession session;
 
-    //@Transactional
+    @GetMapping("/board/save-form")
+    public String saveForm() {
+        return "board/save-form";
+    }
+
+    @PostMapping("/board/save")
+    public String save(BoardRequest.SaveDTO reqDTO){
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        boardRepository.save(reqDTO.toEntity(sessionUser)); //toentity는 인서트하는 데이터만 사용
+        return "redirect:/";
+    }
+
+
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, HttpServletRequest request){
 
@@ -26,13 +41,6 @@ public class BoardController {
         List<Board> boardList =boardRepository.findAll();
         request.setAttribute("boardList", boardList);
         return "index";
-    }
-
-    @PostMapping("/board/save")
-    public String save(){
-
-
-        return "redirect:/";
     }
 
 
@@ -48,11 +56,6 @@ public class BoardController {
 
 
 
-
-    @GetMapping("/board/save-form")
-    public String saveForm() {
-        return "board/save-form";
-    }
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable Integer id, HttpServletRequest request) {
