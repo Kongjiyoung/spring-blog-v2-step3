@@ -3,9 +3,12 @@ package shop.mtcoding.blog.user;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
 
 @RequiredArgsConstructor
@@ -15,13 +18,14 @@ public class UserController {
     private final HttpSession session;
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO reqDTO) {
-        User sessionUser=userRepository.findByUsernameAndPassword(reqDTO);
 
-        if (sessionUser==null){
-            return "redirect:/login-form";
+        try{
+            User sessionUser=userRepository.findByUsernameAndPassword(reqDTO);
+            session.setAttribute("sessionUser", sessionUser);
+        }catch (DataIntegrityViolationException e){
+            throw new Exception401("유저네임 혹은 비밀번호가 틀렸습니다");
         }
 
-        session.setAttribute("sessionUser", sessionUser);
         return "redirect:/";
     }
     @GetMapping("/join-form")
@@ -30,8 +34,12 @@ public class UserController {
     }
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO reqDTO) {
-        User user=userRepository.save(reqDTO.toEntity());
-        session.setAttribute("sessionUser", user); //바로 로그인되게
+        try{
+            userRepository.save(reqDTO.toEntity());
+        }catch (EmptyResultDataAccessException e){
+            throw new Exception400("동일한 유저네임이 존재합니다");
+        }
+
         return "user/join-form";
     }
     @GetMapping("/login-form")
@@ -42,10 +50,6 @@ public class UserController {
     @GetMapping("/user/update-form")
     public String updateForm(HttpServletRequest request) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-
-        if (sessionUser == null){
-            throw new Exception401("인증되지 않았어요. 로그인 해주세요");
-        }
 
         //조회해서 쓰는게 좋은 이유 : value
         User user=userRepository.findById(sessionUser.getId());

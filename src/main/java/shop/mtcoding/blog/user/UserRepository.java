@@ -38,4 +38,11 @@ public class UserRepository {
 
         return (User) query.getSingleResult();
     }
+
+    public User findByUsername(UserRequest.JoinDTO reqDTO){
+        Query query = em.createQuery("select u from User u where u.username= :username", User.class); //find못함 id로 찾을때만 가능
+        query.setParameter("username", reqDTO.getUsername());
+
+        return (User) query.getSingleResult();
+    }
 }
