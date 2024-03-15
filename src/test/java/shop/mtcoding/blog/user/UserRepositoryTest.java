@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.user;
 
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,32 @@ public class UserRepositoryTest {
     @Autowired //DI 레파지토리에 쓸 수 있지만 계속 써야함
     private UserRepository userRepository; //new가 되는게 아님
 
+    @Autowired
+    private EntityManager em;
+
+    @Test
+    public void updateById_test(){
+        // given
+        int id=1;
+        String password="123456";
+        String email="ssar12@nate.com";
+        // when
+        userRepository.updateById(id, password, email);
+        em.flush(); //실제코드는 작성할 필요가 없다. 트랜잭션이 종료되기 때문에
+        // then
+        System.out.println("updateById_test : " + userRepository.findById(1));
+
+    }
+    @Test
+    public void findById_test(){
+        // given
+        int id=1;
+
+        // when
+        userRepository.findById(id);
+
+        // then
+    }
     @Test
     public void findByUsername_test(){
         // given

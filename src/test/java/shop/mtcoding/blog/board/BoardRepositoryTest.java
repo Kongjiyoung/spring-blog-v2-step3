@@ -1,5 +1,8 @@
 package shop.mtcoding.blog.board;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,6 +17,34 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private EntityManager em;
+
+    @Test
+    public void updateById_test(){
+        // given
+        int id=1;
+        String title="제목수정";
+        String content="내용수정";
+        // when
+        boardRepository.updateById(id, title, content);
+        em.flush(); //실제코드는 작성할 필요가 없다. 트랜잭션이 종료되기 때문에
+        // then
+        System.out.println("updateById_test : " + boardRepository.findById(1));
+
+    }
+    @Test
+    public void delete_test(){
+        // given
+        int id =1;
+
+        // when
+        boardRepository.deleteById(id);
+
+        // then
+        System.out.println("deleteById_test : " + boardRepository.findAll().size());
+    }
     @Test
     public void findAllV2_test(){
         //given

@@ -37,4 +37,8 @@ public class User { //모델링 : 데이터베이스세상과 자바의세상이
         this.email = email;
         this.createdAt = createdAt;
     }
+    public void update(String password, String email){
+        this.password = password;
+        this.email = email;
+    }
 }

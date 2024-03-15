@@ -39,4 +39,5 @@ public class Board { //모델링 : 데이터베이스세상과 자바의세상�
         this.user = user;
         this.createdAt = createdAt;
     }
+
 }
