@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.net.InterfaceAddress;
+import java.util.Optional;
 
 //자동 컴퍼너트 스캔이 된다
 //인터페이스는 인터페이스를 상속받을 수 있어서
@@ -15,7 +16,9 @@ public interface UserJPARepository  extends JpaRepository<User, Integer>{
     //간단한 쿼리를 만들때만 이렇게 써주기
     //원래는 이렇게 써줌 근데 동적쿼리를 짜줄 때 쿼리만 만들어주는 레파지토리를 만들어준다
     //@Query("select  u from User u where u.username = :username and u.password = :password")
-    User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
+    //옵셔널걸어주면 null을 체크할 수 있음 단건체크할때 null일 수 있는 거 걸어놓기
+    Optional<User> findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
+    Optional<User> findByUsername(@Param("username") String username);
 }
