@@ -10,22 +10,37 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
+import shop.mtcoding.blog.board.BoardJPARepository;
 
 @RequiredArgsConstructor
 @Controller
 public class UserController {
     private final UserService userService;
-    private final UserRepository userRepository;
     private final HttpSession session;
+
+    @GetMapping("/user/update-form")
+    public String updateForm(HttpServletRequest request) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        //굳이 안만들어도 되지만 일관성있게 만들기 위해서 함
+        User user=userService.회원조회(sessionUser.getId());
+        request.setAttribute("user", user);
+
+        return "user/update-form";
+    }
+
+    @PostMapping("/user/update")
+    public String update(UserRequest.UpdateDTO reqDTO) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        User user = userService.회원조회(sessionUser.getId());
+        session.setAttribute("user", user);
+        return "redirect:/";
+    }
+
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO reqDTO) {
 
-        try{
-            User sessionUser=userRepository.findByUsernameAndPassword(reqDTO);
-            session.setAttribute("sessionUser", sessionUser);
-        }catch (DataIntegrityViolationException e){
-            throw new Exception401("유저네임 혹은 비밀번호가 틀렸습니다");
-        }
+        User sessionUser=userService.로그인(reqDTO);
+        session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
     }
@@ -43,25 +58,6 @@ public class UserController {
         return "user/login-form";
     }
 
-    @GetMapping("/user/update-form")
-    public String updateForm(HttpServletRequest request) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-
-        //조회해서 쓰는게 좋은 이유 : value
-        User user=userRepository.findById(sessionUser.getId());
-        request.setAttribute("user", user);
-
-        return "user/update-form";
-    }
-
-    @PostMapping("/user/update")
-    public String update(UserRequest.UpdateDTO reqDTO) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        User user=userRepository.findById(sessionUser.getId());
-        User newSessionUser=userRepository.updateById(user.getId(), reqDTO.getPassword(), reqDTO.getEmail());
-        session.setAttribute("sessionUser", newSessionUser);
-        return "redirect:/";
-    }
 
     @GetMapping("/logout")
     public String logout() {
