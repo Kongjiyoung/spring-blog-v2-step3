@@ -77,7 +77,10 @@ public class BoardController {
         User sessionUser = (User) session.getAttribute("sessionUser");
         Board board = boardService.글상세보기(id, sessionUser);
 
+
+
         request.setAttribute("board", board);
+        System.out.println("서버 사이드 랜더링 직전에는 Board 상태이다");
         return "board/detail";
     }
 }

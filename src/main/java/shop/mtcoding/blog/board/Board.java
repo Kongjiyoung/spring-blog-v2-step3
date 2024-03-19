@@ -1,46 +1,4 @@
-//package shop.mtcoding.blog.board;
-//
-//import jakarta.persistence.*;
-//import lombok.Builder;
-//import lombok.Data;
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import org.hibernate.annotations.CreationTimestamp;
-//import shop.mtcoding.blog.user.User;
-//import shop.mtcoding.blog.util.MyDateUtil;
-//
-//import java.sql.Timestamp;
-//
-////setter는 나중에 값이 바뀔때 하는 거 변경할 애들만 하는거
-//@NoArgsConstructor
-//@Data //추천하지않음 getter만
-//@Entity
-//@Table(name="board_tb")
-//public class Board { //모델링 : 데이터베이스세상과 자바의세상이 다르기 때문에 가져오기 위해 만들어줘야함
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Integer id;
-//    private String title;
-//    private String content;
-//
-//
-//    //@joinColumn(name="userId") //따로 pk가져온 폴링키 이름을 지정할 수 있음
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private User user; //user_id 자동으로 pk가져와 user_id로 연결함 //폴링키가 자동으로 제약조건으로 걸림
-//
-//    @CreationTimestamp //pc -> db (날짜 주입)
-//    private Timestamp createdAt;
-//
-//    @Builder
-//    public Board(Integer id, String title, String content, User user, Timestamp createdAt) {
-//        this.id = id;
-//        this.title = title;
-//        this.content = content;
-//        this.user = user;
-//        this.createdAt = createdAt;
-//    }
-//
-//}
+
 package shop.mtcoding.blog.board;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,9 +8,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import shop.mtcoding.blog.reply.Reply;
 import shop.mtcoding.blog.user.User;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Data
@@ -72,8 +33,13 @@ public class Board {
     @CreationTimestamp // pc -> db (날짜주입)
     private Timestamp createdAt;
 
+    //Lazy로딩을 쓰면 reply를 모두 가져온다 //직접조회를 하면 페이징이 가능하다
+    //many관계에서는 절대 만들 수 없다 many에서 폴링키를 가지고 있어야지
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE) //Entity 객체의 변수명
+    private List<Reply> replies = new ArrayList<>(); //만약 안에 데이터가 없으면 터져서 new를 해서 빈객체를 만들어 주는게 좋음
+
     @Transient // 테이블 생성이 안됨
-    private boolean isOwner;
+    private boolean isBoardOwner;
 
 
     @Builder

@@ -20,43 +20,28 @@ public class BoardService {
         Board board = boardJPARepository.findByIdJoinUser(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
 
-        boolean isOwner = false;
+        boolean isBoardOwner = false;
         if(sessionUser != null){
             if(sessionUser.getId() == board.getUser().getId()){
-                isOwner = true;
+                isBoardOwner = true;
             }
         }
 
-        board.setOwner(isOwner);
+        board.setBoardOwner(isBoardOwner);
+
+        board.getReplies().forEach(reply -> {
+            boolean isReplyOwner=false;
+            if(sessionUser != null) {
+                if (reply.getUser().getId() == sessionUser.getId()) {
+                    isReplyOwner = true;
+                }
+            }
+            System.out.println("isReplyOwner = " + isReplyOwner);
+            reply.setReplyOwner(isReplyOwner);
+        });
 
         return board;
     }
-    // board, isOwner
-//    public BoardResponse.DetailDTO 글상세보기(int boardId, User sessionUser) {
-//        Board board = boardJPARepository.findByIdJoinUser(boardId)
-//                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
-//
-//        // 로그인을 하고, 게시글의 주인이면 isOwner가 true가 된다.
-//
-//        return new BoardResponse.DetailDTO(board, sessionUser);
-//    }
-
-//    public void 글상세보기(int boardId, User sessionUser) {
-//        Board board =boardJPARepository.findByIdJoinUser(boardId)
-//                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
-//
-//        //로그인을 하고 , 게시글 주인이면 isOwner가 true로 반환된다.
-//        boolean isOwner=false;
-//        if (sessionUser !=null){
-//            if(sessionUser.getId()==board.getUser().getId()){
-//                isOwner=true;
-//            }
-//        }
-//
-//        if(board ==null){
-//            throw new Exception404("게시글을 찾을 수 없습니다");
-//        }
-//    }
     public Board 글조회(int boardId){//id를 정확하게 적어주기
         Board board = boardJPARepository.findById(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
