@@ -9,6 +9,8 @@ import shop.mtcoding.blog._core.errors.exception.Exception401;
 import shop.mtcoding.blog.user.User;
 
 public class LoginInterceptor implements HandlerInterceptor{
+
+    // /api/** 인증 필요 주소
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("preHandle............");

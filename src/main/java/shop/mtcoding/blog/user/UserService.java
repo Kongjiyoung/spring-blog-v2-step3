@@ -38,7 +38,7 @@ public class UserService {
         return sessionUser;
     }
     @Transactional //JPARepository가 가지고 있어야함 왜냐하면 여러번 커밋해야해서 왜냐하면 하
-    public void 회원가입(UserRequest.JoinDTO reqDTO){
+    public User 회원가입(UserRequest.JoinDTO reqDTO){
 
         //2. 유저네임 중복검사(서비스 제공) - DB연결이 필요함 예외처리
         Optional<User> userOP=userJPARepository.findByUsername(reqDTO.getUsername());
@@ -47,6 +47,8 @@ public class UserService {
             throw new Exception400("중복된 유저네임입니다");
         }
 
-        userJPARepository.save(reqDTO.toEntity());
+        User user=userJPARepository.save(reqDTO.toEntity());
+
+        return user;
     }
 }

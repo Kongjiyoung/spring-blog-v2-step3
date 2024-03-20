@@ -52,7 +52,7 @@ public class BoardService {
 
 
     @Transactional
-    public void 글수정(int boardId, int sessionUserId, BoardRequest.UpdateDTO reqDTO){//id를 정확하게 적어주기
+    public Board 글수정(int boardId, int sessionUserId, BoardRequest.UpdateDTO reqDTO){//id를 정확하게 적어주기
         //1. 조회 및 예외처리
         Board board = boardJPARepository.findById(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
@@ -64,11 +64,14 @@ public class BoardService {
         //3. 글 수정
         board.setTitle(reqDTO.getTitle());
         board.setContent(reqDTO.getContent());
+
+        return board;
     }
 
     @Transactional
-    public void 글쓰기(BoardRequest.SaveDTO reqDTO, User sessionUser){
-        boardJPARepository.save(reqDTO.toEntity(sessionUser));
+    public Board 글쓰기(BoardRequest.SaveDTO reqDTO, User sessionUser){
+        Board board=boardJPARepository.save(reqDTO.toEntity(sessionUser));
+        return board;
     }
 
     public void 글삭제(int boardId, int sessionUserId) {
@@ -83,9 +86,10 @@ public class BoardService {
         boardJPARepository.deleteById(boardId);
     }
 
-    public List<Board> 글목록조회() {
+    public List<BoardResponse.MainDTO> 글목록조회() {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        return boardJPARepository.findAll(sort);
+        List<Board> boardList=boardJPARepository.findAll(sort);
+        return boardList.stream().map(board -> new BoardResponse.MainDTO(board)).toList();
     }
 
     //board, isOwner
