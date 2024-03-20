@@ -18,32 +18,17 @@ public class BoardController {
     private final HttpSession session;
     private final BoardService boardService;
 
-    @GetMapping("/board/save-form")
-    public String saveForm() {
-        return "board/save-form";
-    }
-
+    // TODO : 글목록조회 API 필요
+    // TODO : 글조회 API 필요
+    // TODO : 글상세보기 API 필요
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO reqDTO){
+
         User sessionUser = (User) session.getAttribute("sessionUser");
         boardService.글쓰기(reqDTO, sessionUser); //toentity는 인서트하는 데이터만 사용
         return "redirect:/";
     }
 
-    @GetMapping({ "/" })
-    public String index(HttpServletRequest request) {
-        List<Board> boardList=boardService.글목록조회();
-        request.setAttribute("boardList", boardList);
-        return "index";
-    }
-
-
-    @GetMapping("/board/{id}/update-form")
-    public String updateForm(@PathVariable Integer id, HttpServletRequest request){
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        Board board = boardService.글조회(id);
-        return "board/update-form";
-    }
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, BoardRequest.UpdateDTO reqDTO){
@@ -60,25 +45,4 @@ public class BoardController {
     }
 
 
-//    @GetMapping("/board/{id}")
-//    public String detail(@PathVariable Integer id, HttpServletRequest request) {
-//        User sessionUser = (User) session.getAttribute("sessionUser");
-//        boardService.글상세보기(id, sessionUser);
-//
-//        request.setAttribute("isOwner", isOwner);
-//        request.setAttribute("board", board);
-//        return "board/detail";
-//    }
-
-    @GetMapping("/board/{id}")
-    public String detail(@PathVariable Integer id, HttpServletRequest request) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        Board board = boardService.글상세보기(id, sessionUser);
-
-
-
-        request.setAttribute("board", board);
-        System.out.println("서버 사이드 랜더링 직전에는 Board 상태이다");
-        return "board/detail";
-    }
 }
